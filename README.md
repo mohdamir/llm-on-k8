@@ -50,7 +50,8 @@ llm-on-k8/
 │   └── bge-m3/           # BGE embedding model
 └── docs/                 # Advanced configs
 
-🤝 Contributing
+
+## Contributing
 
 Fork the repo.
 Add your model configs
