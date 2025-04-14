@@ -42,7 +42,7 @@ cd llm-on-k8
 
 # Deploy with K8
 
-
+```
 llm-on-k8/
 ├── deployments/          # Deployment files for different llms
 │   ├── llama3-70b-awq/   # 4-bit quantized Llama 3
