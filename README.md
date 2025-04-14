@@ -43,13 +43,6 @@ cd llm-on-k8
 # Deploy with K8
 
 ```
-llm-on-k8/
-├── deployments/          # Deployment files for different llms
-│   ├── llama3-70b-awq/   # 4-bit quantized Llama 3
-│   ├── mixtral-fp8/      # FP8 Mixtral-8x7B
-│   └── bge-m3/           # BGE embedding model
-└── docs/                 # Advanced configs
-
 
 ## Contributing
 
