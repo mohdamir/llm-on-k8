@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mistral-24b-gptq
+  namespace: default
+  labels:
+    app: mistral-24b-gptq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mistral-24b-gptq
+  template:
+    metadata:
+      labels:
+        app: mistral-24b-gptq
+    spec:
+      volumes:
+      - name: cache-volume
+        persistentVolumeClaim:
+          claimName: mistral-7b
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: "16Gi"
+      containers:
+      - name: mistral-24b-gptq
+        image: vllm/vllm-openai:latest
+        command: ["/bin/sh", "-c"]
+        args: [
+          "vllm serve ConfidentialMind/Mistral-Small-24B-Instruct-2501_GPTQ_G32_W4A16 \
+          --trust-remote-code"
+        ]
+        env:
+        - name: HUGGING_FACE_HUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hf-token-secret
+              key: token
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "32"
+            memory: "128Gi"
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: "16"
+            memory: "64Gi"
+            nvidia.com/gpu: "1"
+        volumeMounts:
+        - mountPath: /root/.cache/huggingface
+          name: cache-volume
+        - name: shm
+          mountPath: /dev/shm
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 900
+          periodSeconds: 20
+          timeoutSeconds: 60
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 900
+          periodSeconds: 10
+          timeoutSeconds: 60
+          failureThreshold: 10
