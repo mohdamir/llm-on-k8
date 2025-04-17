@@ -1,1 +1,37 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mixtral-8x7b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mixtral-8x7b
+  template:
+    metadata:
+      labels:
+        app: mixtral-8x7b
+    spec:
+      containers:
+        - name: mixtral-8x7b
+          image: vllm/vllm-openai:latest
+          args:
+            - --model=neuralmagic/Mixtral-8x7B-Instruct-v0.1-FP8
+            - --dtype=auto
+            - --tensor-parallel-size=4
+            - --max-model-len=4096
+            - --trust-remote-code
+            - --max-num-seqs=16
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: shm
+      volumes:
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: "32Gi"
