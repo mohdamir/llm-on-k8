@@ -12,6 +12,8 @@ spec:
       labels:
         app: mixtral-8x7b
     spec:
+      nodeSelector:
+        nvidia.com/gpu-type: A100
       containers:
         - name: mixtral-8x7b
           image: vllm/vllm-openai:latest
